@@ -1,8 +1,9 @@
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-
-function Todo() {
+import { Card } from '@mui/material';
+import { Typography, Button } from '@mui/material';
+function Todos() {
   const [todos, setTodo] = useState([]);
   useEffect(() => {
     fetch('http://localhost:3000/todos', {
@@ -18,13 +19,38 @@ function Todo() {
 
   return (
     <>
-      hi there
+      {/* hi there */}
       {todos.map((todo) => (
         <p key={todo.id}>
-          Title: {todo.title}, Description: {todo.description}
+          {/* Title: {todo.title}, Description: {todo.description} */}
+          <Todo todo={todo} />
         </p>
       ))}
     </>
   );
 }
-export default Todo;
+
+function Todo(props) {
+  return (
+    <Card
+      style={{
+        border: '1px solid black',
+        width: 300,
+        margin: 10,
+        minHeight: 90,
+        maxHeight: 200,
+      }}
+    >
+      <Typography textAlign={'center'}> {props.todo.title}</Typography>
+      <br />
+      <Typography textAlign={'center'}> {props.todo.description}</Typography>
+
+      <br />
+      <center>
+        <Button variant="contained">edit</Button>
+      </center>
+    </Card>
+  );
+}
+
+export default Todos;
