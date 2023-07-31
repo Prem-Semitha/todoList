@@ -1,8 +1,7 @@
 import React from 'react';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { Card } from '@mui/material';
-import { Typography, Button } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Card, Typography, Button } from '@mui/material';
+
 function Todos() {
   const [todos, setTodo] = useState([]);
   useEffect(() => {
@@ -18,19 +17,26 @@ function Todos() {
   }, []);
 
   return (
-    <>
-      {/* hi there */}
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        marginTop: 0,
+        padding: 100,
+      }}
+    >
       {todos.map((todo) => (
-        <p key={todo.id}>
-          {/* Title: {todo.title}, Description: {todo.description} */}
-          <Todo todo={todo} />
-        </p>
+        <div key={todo.id}>
+          <Todo todo={todo} todos={todos} setTodo={setTodo} />
+        </div>
       ))}
-    </>
+    </div>
   );
 }
 
-function Todo(props) {
+function Todo({ todo, todos, setTodo }) {
   return (
     <Card
       style={{
@@ -39,15 +45,37 @@ function Todo(props) {
         margin: 10,
         minHeight: 90,
         maxHeight: 200,
+        margin: 'auto',
       }}
     >
-      <Typography textAlign={'center'}> {props.todo.title}</Typography>
+      <Typography textAlign={'center'}> {todo.title}</Typography>
       <br />
-      <Typography textAlign={'center'}> {props.todo.description}</Typography>
+      <Typography textAlign={'center'}> {todo.description}</Typography>
 
       <br />
       <center>
-        <Button variant="contained">edit</Button>
+        <Button
+          variant="contained"
+          onClick={() => {
+            fetch('http://localhost:3000/todos/' + todo.id, {
+              method: 'DELETE',
+              headers: {
+                'content-type': 'application/json',
+              },
+            }).then((response) => {
+              if (response.ok) {
+                alert('Todo has been deleted');
+                setTodo((prevTodos) => {
+                  return prevTodos.filter((t) => t.id !== todo.id);
+                });
+              } else {
+                alert('Error: Todo was not deleted');
+              }
+            });
+          }}
+        >
+          Delete
+        </Button>
       </center>
     </Card>
   );
